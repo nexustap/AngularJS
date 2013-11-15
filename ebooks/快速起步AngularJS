@@ -1,0 +1,17 @@
+欢迎阅读 《快速起步AngularJS》,它将指导你使用与AngularJS构建新一代的JavaScript应用程序。这本书为你精心设计，帮你尽可能高效快速的使用AngularJS生产。通过这本书你将学习到基本的框架和所有你需要知道的关于模板、数据绑定、模块依赖项注入,和指令。通过这些知识，你可以将你的应用改造成强大的MVC应用。
+
+这个文档包含以下部分:
+什么是AngularJS?:
+探索AngularJS，区分与其他与JavaScript框架异同,以及为什么AngularJS他会成为你下一个项目的最好选择。
+
+HelloWorld:
+学会如何是用AngularJS启动并运行你的JS程序,这样你就可以从现在开始构建先进的web应用程序。
+
+快速启动- 使用AngularJS创建MVC应用程:
+马上了解M(模型)-V(视图)-C(控制器)模式,并了解如何快速、灵活的使用AngularJS建立一个MVC应用。
+
+你需要知道的AngularJS的五大功能:
+发现AngularJS的优势,探索其最突出的特征：templates（模板）、two-way data binding（双向数据绑定）、modules(模块)、dependency injection(依赖项注入)、Dirctives(指令)。
+
+你应该了解的专家和社区论坛:
+关注主要贡献者,AngularJS专家他们的博客。访问帮助链接教程,论坛,文章,和Twitter feed。 会让你了解到最新的Angular动态JS。
