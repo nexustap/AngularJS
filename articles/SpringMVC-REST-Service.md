@@ -5,15 +5,16 @@ SpringMVC 的restful 服务 开发,和设计
 我使用简化版本的SpringMVC,只是用了MVC,快速设计和开发Restful的服务而已.
 什么是Model,什么是View,我都布关心,我只关心出数据服务(REST).
 比如如下代码:
-
-	@RequestMapping(value = "/echo", method = RequestMethod.GET)
-	@ResponseBody
-	public String echo(){
-		
-		return "{ status:0, describe:'ok' } ";
-		
-		
-	}
+```java
+@RequestMapping(value = "/echo", method = RequestMethod.GET)
+@ResponseBody
+public String echo(){
+	
+	return "{ status:0, describe:'ok' } ";
+	
+	
+}
+```
 	
 请求的是 url是  /echo 的服务.Method是 GET,返回的是整个ResponseBody.
 所以我返回的json 就是 这个string 类型的.
