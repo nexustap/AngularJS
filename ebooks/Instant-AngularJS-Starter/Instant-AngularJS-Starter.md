@@ -198,6 +198,321 @@ currentTime属性是要给我们在Clock方法里设置的JavaScript日期对象
 
 比我们在这里看到，AngularJS还有更多的东西提供给我们。让我们建立更大的应用！在下一节中，我们将探讨视图，控制器和模型如何携手合作，共创基于AngularJS的一个可扩展的应用架构。
 
+Hello World的例子是不错的，因为它们给你介绍了框架的语法和功能。但是，如果你曾经试图用新的JavaScript框架建立一个大型的产品，你可能已经遇到了同样的问题-scale。我不知道你试图用angularjs的初衷不仅仅是基于上面一些简单的例子，我很确信，您将要使用多个控制器，动态视图和模型在真实数据中。毕竟，模型，视图和控制器之间的互动是AngularJS做得很好的事情之一。在本节中，我们将建立一个模型-视图-控制器（MVC）模式的应用。我们将结合多个视图，模型和控制器构建一个可扩展和复制的架构。之前，我们深入到代码（在本节中，有大量的代码）让我们先对mvc模板简单的做一下复习
+第1步-了解
+
+模型-视图-控制器，或MVC 模型-视图-控制器模式,是构建可扩展的Web应用程序的一种流行的设计模式。分为以下三个部分：
+
+ 1  模型，其中包含应用程序中使用的数据。
+ 
+ 2  视图，将数据显示给用户，并读取用户输入。
+ 
+ 3  控制器，视图数据格式化和处理应用程序的状态。
+ 
+如果你不是很熟悉这种模式，我建议你看看它的在线。这是一个构建可扩展的Web应用程序的强大架构。如果你只需要一个快速复习，这里是亮点。MVC的规则是。模型应该只关心存储数据，不管关于控制器或视图的任何事情。视图只关心把数据呈现给用户，并读取用户输入。控制器连接着模型和视图。当一个控制器决定加载视图，会从数据模型中的提取符合视图需要的数据，当视图检测到用户操作，会把信息送入到控制器，然后再决定下一步该怎么做。如果你是刚接触mvc，会感觉到这个框架有很多的优点，对我们而言，它确实有助于应用程序序的发展,这就是本节中的重点.
+
+第2步-建设指南“的应用
+
+让我们建立一个遵循MVC模式的AngularJS的应用，。我们为什么不通过这本书的指导呢？它有一个章节列表，我们可以允许用户添加和删除每一章节的注释。什么，看起来像MVC？让我们把它分解：我们将需要一个章节列表视图。因为我们让用户添加注释，我们需要用户输入的视图。在我们的应用程序中，我们有几个不同的动作：查看章节/笔记，添加注释，并删除便笺。为每个动作增加控制器，由于我们存储一个动态集合，我们需要一个模型来管理它们。把章节数据放在数据模型中，数据模型也是数据。我们还需要为我们的应用程序配置AngularJS，比如视图的css。如果我们为这些建一个文件目录，我们可以得到如下： 
+
+    Guidebook- 
+    Guidebook.html -
+    -Guidebook.js- 
+    model
+    -NoteModel.js 
+    -ChapterModel.js
+    view
+    -chapters.html 
+    -addNote.html 
+    style.css
+    controller
+    - NotesController.js
+    - ChapterController.js
+
+关于我们的控制器，我遗漏了一点，删除和增加注释，我们在同一个文件。实际上，我们可以把所有的JavaScript语句放在一个大的文件里，如果我们想。分离只是为了让我们的生活更轻松; AngularJS不在乎无论哪种方式。您可能已经注意到，我们把html文件称作视图。这是不完全正确的;AngularJS视图实际上是一个已编译的HTML模板，我们打算把那些HTML文件放到这个模板上。请记住，AngularJS是扩大和加强现有的Web技术的框架，这点特别重要。现在，我们知道我们正在构建.
+
+步骤3 -配置指南应用AngularJS 
+
+我们将开始AngularJS的配置文件，Guidebook.html和Guidebook.js的。这是我们将定义应用程序的结构，包括我们的模型和控制器。首先第一件事情，让我们进入Guidebook.html，我们将在这里开始我们的文件结构：
+
+    <！DOCTYPE HTML> <html ng-app='Guidebook'> <HEAD> <脚本的src ='http://ajax的.googleapis.com / Ajax /库/ angularjs/1.0.2/angular.js的'> </ SCRIPT> src='Guidebook.js'> </ SCRIPT> <script src='controller/ChapterController.js'> </ SCRIPT> <script src='controller/NotesControllers.js'> </ SCRIPT> <script src='model/NoteModel.js'> </ SCRIPT> <script src='model/ChapterModel.js'> </ SCRIPT> <link rel='stylesheet'的href='view/styles.css'> <AngularJS入门指南</ TITLE> </ HEAD> <BODY> <H1>欢迎AngularJS入门指南</ H1> <股息NG视图> <！ -点击此处添加在运行时。- > </ DIV> </ BODY> </ HTML>
+
+一些看起来很熟悉。我们有我们的DOCTYPE，我们包括AngularJS，我们有相应的注解。我们也包括我们的模型和控制器文件，但没有视图文件（视图映射通过JavaScript，我们会在一分钟内）。请注意，这个时候，我们正在定义一个名称为ng-app annotation注释。这是没有必要的，因为我们看到最后一个例子，但对于现实世界的应用，这是一个好主意，因为它可以帮助我们的模型和控制器命名。（如果我们有两个AngularJS应用程序在同一页上，单独的模块，将帮助我们记住哪些组件属于哪个应用程序）。我们也有一个新的注释：NG-视图。这告诉AngularJS，哪里需要加载我们的视图。NG视图只能有一个实例，它应该包含我们要在应用程序中动态加载和改变的一切。如果东西所在NG视图之外，像我们前面的例子中的标题，这将是在任何时候都可见。
+让我们回到Guidebook.js,指定我们的视图映射:
+
+    var guidebookConfig = function($routeProvider) {
+    
+        $routeProvider
+        .when('/', {
+        controller: 'ChaptersController',
+        templateUrl: 'view/chapters.html'
+        })
+        .when('/chapter/:chapterId', {
+        controller: 'ChaptersController',
+        templateUrl: 'view/chapters.html'
+        })
+        .when('/addNote/:chapterId', {
+        controller: 'AddNoteController',
+        templateUrl: 'view/addNote.html'
+        })
+        .when('/deleteNote/:chapterId/:noteId', {
+        controller: 'DeleteNoteController',
+        templateUrl: 'view/addNote.html'
+        })
+        ;
+        };
+        var Guidebook = angular.module('Guidebook', []).
+        config(guidebookConfig);
+
+让我们看上文中的最后一行。看看是如何定义一个AngularJS的命名空间，我们称为模块（我们后面将讨论更多关于模块的话题）。通过这种方式，我们可以保证我们的控制器和数据模型在他们的命名空间范围内起效，这是一个最好的做法，尤其是重要的，这个应用可以加到其它的页面中与其它内容共存
+同样你看，我们绑定一个路由配置在我们的应用中，路由给控制器一个url，并通过模板展示出，控制器需要的参数是url的一部份，例如，如果我们访问http://your-webserver/guidebook.html#/chapter/2 ，angularjs加载chapters.html 页面，并传chapter/2 参数给控制器
+当我们要删除一个便笺，比如第一章中的第四章节，我们会加载一个url，后面加上#/deleteNode/1/4.,那控制器就会把此章的1到4的章节删掉
+路由的知识点其实比我们上面讲的点要多，比如，上面的例子是直接去访问一个有效的链接，路由也支持前进和后退的导航，这意味着用户只要点击浏览器中的前进和后退按钮，AngularJS将返回到最近的内部网址，而不是完全退出应用程序。 
+路由是一个简单，功能强大的一个angularjs的内部应用，即使是一个很长的路由列表，这比散列在多个文件中的逻辑管理方式要更好,在这一点上，我们为我们的应用配置少量的路由，然后告诉angularjs控制器何时加载它们，同时告诉控制器加载视图，现在让我们建立一些视图
+
+
+
+第4步-创建视图 
+如前所述，我们视图文件，包含HTML模板。我们Hello World应用程序中的段落标记是一个模板，这与我们建立的应用程序指南很相似，只是这个稍微大一点。让我们现在开始定义我们这一章的模板
+
+    <ul>
+    <li ng-repeat='chapter in chapters | orderBy:"title"'>
+    <h2>{{chapter.title}}</h2>
+    <p>{{chapter.summary}}</p>
+    <p>
+    <a href='#/chapter/{{chapter.id}}'>
+    {{chapter.notes.length}}
+    <span ng-show='chapter.notes.length == 1'>note</span>
+    <span ng-hide='chapter.notes.length == 1'> notes</span>
+    </a>
+    |
+    <a href='#/addNote/{{chapter.id}}'>add note</a>
+    </p>
+    <ul class='notes' ng-show='chapter.id == >
+    <li ng-repeat='note in chapter.notes | orderBy:"id"'>
+    <div>#{{$index}}</div>
+    <div><a href ng-click='onDelete(note.id)'>delete</a></div>
+    <p>{{note.content}}</p>
+    </li>
+    <ul>
+    </li>
+
+这要比hello world视图复杂一点！我知道AngularJS有很多的魔法，这可能显得有点令人生畏。让我们现在只专注控制器上的互动，我们稍后将填写相应的语法让我们开始思考一下我们正在试图做的。我们希望这本书所有的章节和所选的章节，我们也希望用户已经创建注释。此外，各章需要添加注释的链接，每一个注释都需要有相关的删除链接。让我们来看看我们在实现中是如何工作的。
+
+我们开始列表项ng-repeat语法。可以理解成JavaScript中的foreach循环。所循环的内容在 我们的scope中，并希望每一章节都有标题和摘要，因为我们在接下来的两行中将展示它们。在那之后，我们将展示一组HTML链接（AngularJS一点点增强，像往常一样）。请记住我们的路线如何设置：我们会通过第一章的chapterid来重新加载每一章节（我们在一个循环中，我们会确认关于每章的这些链接)第二，循环以后，将通知AddNoteController 加载各章节的模板,在那之后，我们有另一个ng-repeat 指令为当前章节的注释。我们使用的是ng-show显示满足条件的注释（在满足条件的情况下）如果当前在我们的外循环chapterId匹配$ scope.selectedChapterId，如果我们要显示这些内容，我们将打印章节ID和内容，并添加一个删除的链接，再次，不要担心，还没有掌握相关语法。相反，我们应着眼于从控制器如果获取我们想要的信息。步骤如下：
+每章包含标题，摘要和笔记列表的列表。所有注释应该有一个ID和内容属性。
+有个属性称为selectedChapterId的。
+有个函数名为onDelete（）。
+
+
+我们将在第二个步骤关注ChaptersController，但首先让我们来看看我们的其他视图，比如addNote.html：
+
+    <form name='addNote'>
+    <label for='noteContent'>Enter a note about this
+    chapter:</label>
+    <textarea id='noteContent' ng-model='note.content'></textarea>
+    <button ng-click='cancel()'>Cancel</button>
+    <button ng-click='createNote()' ngdisabled='!
+    note.content'>Create Note</button>
+    </form>
+
+这是一个小的更容易处理的过程。我们有一个窗体，一个标签，一个字段，和两个按钮。它看起来像我们期待的一个函数控制器，cancel() 和 createNote().。我们也有我们的ng-model 在我们的文本区域
+
+NG-模型是用来建立数据模型，视图和控制器共享。这不是一个持久化模型，它只是一个共享数据视图和控制器的便捷方式。此功能称为数据绑定，这是一个话题，在这本书中我们将在后面章节中详细介绍。现在只需要了解用 ng-model标签的方式来调置控制器的$scope 范围的属性
+你可能仍然有点不同意见。没关系！关于控制器方面的概念，我们先了解这么多，让我们接着往下看
+
+
+第五步 – 定义控制器
+在我们的Hello World应用程序中,控制器是一个简单的功能。我们告诉AngularJS，通过ng-controller 属性绑定控制器和我们的视图。这一次，我们已经定义了绑定路由控制器，因此我们需要定义控制器有点不同。我们可以看到在ChaptersController.js:
+
+        Guidebook.controller('ChaptersController',
+    function ($scope, $location, $routeParams, ChapterModel,
+    NoteModel) {
+    var chapters = ChapterModel.getChapters();
+    for (var i=0; i<chapters.length; i++) {
+    chapters[i].notes =
+    NoteModel.getNotesForChapter(chapters[i].id);
+    }
+    $scope.chapters = chapters;
+    $scope.selectedChapterId = $routeParams.chapterId;
+    $scope.onDelete = function(noteId) {
+    var confirmDelete = confirm('Are you sure you want to delete
+    this note?');
+    if (confirmDelete) {
+    $location.path('/deleteNote/' + $routeParams.chapterId +
+    '/' + noteId);
+    }
+    };
+    }
+    );
+
+正如你可以看到的，控制器在很大程度上仍是一个单一的功能。我们只是将它添加到我们的应用程序,通过调用Guidebook.controller（Guidebook是我们指定的名字,在我们的NG-应用程序的注释）。
+
+
+注意我们的控制器功能的参数。这是我们以前见过的$scope 范围的变量，但在那之后的各种新事物。这些是什么？它们的解释如下：
+
+$location指令表示，AngularJS是如何获取当前的URL。我们可以用它来 读取或设置当前位置，使我们能够加载新的控制器/视图。
+$ routeParams是我们通过URL传递参数。还记得我们的一些路由定义的参数吗？这就是我们通过$routeParams得到的*
+
+ChapterModel 和NoteModel，是我们的模型对象。AngularJS将发送这些到我们的控制器，自动实例化
+
+
+
+
+最后一点，关于ChapterModel NoteModel，被称为依赖注入。我们将稍后再讨论它，但要注意，现在的参数顺序无所谓。
+
+函数的内容是比较简单的。首先，我们得到的章节信息从ChapterModel和NoteModel得到，这章节，我们将得到我们需要的数据的视图，我们设置我们的 scope 变量，使该视图可以通过它来访问scope.chapters中，在chapters.html中体现出来
+接下来，我们设置selectedChapterId的chapterId 到我们的url中，如果是URL中没有chapterId，这就是没有定义的，在视图中显示的内容，是根据我们传的selectedChapterId来定的，如果没有选择，我们根本不会显示任何信息。
+最后，我们给视图onDelete（）函数来删除链接，正如用户之前看到的，如果用户点击删除按钮,此函数使用window.confirm（）方法，生成JavaScript（记得，AngularJS是一个增强，我们仍然有机会在我们的控制器使用标准的JavaScript功能）。如果用户进行删除，我们使用$location 参数来改变我们的URL和加载DeleteNoteController的。
+让我们形动起来！在结束之前，我们看一下我们的控制器状态和分析我们的应用程序的状态。这里的NoteController.js：
+
+    Guidebook.controller('AddNoteController',
+    function ($scope, $location, $routeParams, NoteModel) {
+    var chapterId = $routeParams.chapterId;
+    $scope.cancel = function() {
+    $location.path('/chapter/' + chapterId);
+    }
+    $scope.createNote = function() {
+    NoteModel.addNote(chapterId, $scope.note.content);
+    $location.path('/chapter/' + chapterId);
+    }
+    }
+    );
+    Guidebook.controller('DeleteNoteController',
+    function ($scope, $location, $routeParams, NoteModel) {
+    var chapterId = $routeParams.chapterId;
+    NoteModel.deleteNote(chapterId, $routeParams.noteId);
+    $location.path('/chapter/' + chapterId);
+    }
+    );
+
+有两个控制器功能在这个文件中，AddNoteController和DeleteNoteController。我们以同样的方式定义ChaptersController，你可以看到，他们采取同样的参数，去掉我们不需要的ChapterModel的，该DeleteNoteController功能类似ChaptersController。它获取chapterId和noteId 从routeParams ,发送删除命令给NoteModel。在那之后，我们重新回到的ChaptersController功能。
+AddNoteController功能是一个有点不同。我们设置两个功能，在addNote.html我们可以看到
+cancel() 将返回章节列表，通过ChaptersController函数
+createNote（）会告诉NoteModel模型对象添加新的注释，然后定位于ChaptersController 函数
+到目前为止，让我们看一下我们的视图，和三个控制器，让我们移动到模型之前，对于初学者来说，是一个非常松散的耦合，控制器和视图之间。
+不像我们的Hello World的例子，我们在视图中直接绑定控制器，我们可以自由的使用路径。
+我们也看到了两种不同的方式加载控制器。最终,当URL变化时，会加载一个唯一的控制器，但我们可以做到这一点无论从视图或控制器。
+在chapters.html，例如，有一些新的url链接。在我们的控制器中，我们通过修改$location 参数来改变url。这些都是有效的方式来加载新的控制器的方法。
+最后， $scope,这是视图和控制器之间传递信息的一种方法,在控制器中设置视图的各种属性，而且还可以使用ng-model给数据控制器传递数据。
+我们已讲解了mvc应用的三份之二，接下来是最困难的部份。我们已经学会了如何定义视图和控制器，以及他们彼此间通过routes 和$scope如何交互。让我们添加的最后一块拼图。
+
+第六步 – 建立模型
+
+在我们来看看我们的模型代码之前，让我们快速看看我们的控制器，看看我们的ChapterModel 和 NoteModel需要什么，
+
+在ChaptersController,我们创建了 ChapterModel .getChapters() 和
+NoteModel.getNotesForChapter()函数
+
+在AddNoteController中，我们创建了 NoteModel.addNote()函数
+
+在DeleteNoteController中，我们创建了NoteModel.deleteNote()函数
+
+
+
+比如ChapterModel将是简单的两个功能。它只需要一个功能，而且要做的是返回一个没有改变的列表,这里的ChapterModel.js
+
+    Guidebook.service('ChapterModel', function() {
+    this.getChapters = function() {
+    return [{
+    id: 0,
+    title: 'Chapter 1: So, What is AngularJS?',
+    summary: 'Find out what separates AngularJS from...'
+    }, {
+    id: 1,
+    title: 'Chapter 2: HelloWorld',
+    summary: 'Learn how to get up and running with...'
+    }, {
+    id: 2,
+    title: 'Chapter 3: QuickStart',
+    summary: 'Brush up on the Model-View-Controller...'
+    }, {
+    id: 3,
+    title: 'Chapter 4: Key AngularJS Features',
+    summary: 'Discover the strengths of AngularJS...'
+    }, {
+    id: 4,
+    title: 'Chapter 5: The AngularJS Community',
+    summary: 'Get to know the top contributors...'
+    }
+    ]};
+    });
+
+getChapters（）返回的数据结构是非常简单的，它是一个简单的JavaScript对象数组。函数定义也是很容易的，像往常一样，我们使用应用程序的命名空间，我们定义模型作为AngularJS服务。（我们会在下一节的AngularJS服务和他的分支，我们会讨论依赖注入）。 
+
+我们的NoteModel将要有趣得多，因为我们需要能够存储和检索。让我们看NoteModel.js：
+
+    Guidebook.service('NoteModel', function() {
+    this.getNotesForChapter = function(chapterId) {
+    var chapter = JSON.parse(window.localStorage.
+    getItem(chapterId));
+    if (!chapter) {
+    return [];
+    }
+    return chapter.notes;
+    };
+    this.addNote = function(chapterId, noteContent) {
+    var now = new Date();
+    var note = {
+    content: noteContent,
+    id: now
+    };
+    var chapter = JSON.parse(window.localStorage.
+    getItem(chapterId));
+    if (!chapter) {
+    chapter = {
+    id: chapterId,
+    notes: []
+    }
+    }
+    chapter.notes.push(note);
+    window.localStorage.setItem(chapterId,
+    JSON.stringify(chapter));
+    };
+    this.deleteNote = function(chapterId, noteId) {
+    var chapter = JSON.parse(window.localStorage.
+    getItem(chapterId));
+    if (!chapter || !chapter.notes) {
+    return;
+    }
+    for (var i=0; i<chapter.notes.length; i++) {
+    if (chapter.notes[i].id === noteId) {
+    chapter.notes.splice(i, 1);
+    window.localStorage.setItem(chapterId,
+    JSON.stringify(chapter));
+    return;
+    }
+    }
+    };
+    });
+
+如果你熟悉使用HTML5，你会马上意识到，我们正在使用的本地存储，与现有的Web技术集成形成一个强大的模式，这是另一个例子：有很多的方式来存储和传输数据已经在网络上，让我们用AngularJS无论我们请（甚至另一个JavaScript框架）。
+比如ChapterModel，我们定义NoteModel的服务。然而，这一次，我们定义三种模式功能。让我们来看看在每一个单式
+
+首先，我们来看getNotesForChapter（）。它需要chapterId，它将作为本地存储的一个关键字，如果需要导找某个章节，我们将返回相应的章节，如果没有找到，将返回一个空数组
+下一个是addNote函数。在除了chapterId，它也需要一些内容。我们使用noteContent创建一个注释对象，使用当前时间作为一个唯一的ID。像以前一样，我们使用chapterId增加一组内容，如果没有冲突，我们会把章节加在现有的章节后面，最终，我们建立了一个新的注释，保存在现有存储的末端
+deleteNote（）是NoteModel最后一个功能。这一次，我们检查一章项
+如果我们不能找到一个。（不能删除不存在的东西，对吗？）如果指定一个给定的章节，如果有注释，我们可以找到它并删除它
+这就是我们的模型！他们比视图和控制器要更容易一点。视图和控制器必须关心自己的数据处理和用户的输入，而模型是完全单一用途，只关心存储数据。正如我们刚才看到的，如何存储数据关系到每一个模型，它是否是一个硬编码列表的数据或本地存储接口，它并没有关系到控制器。
+
+
+
+通过在我们的应用程序中建立模型-视图-控制器模式后，如果我们想在我们的小指南中添加一个新的功能，我们知道的步骤如下：
+
+
+
+1。基于用户需要的创建视图
+2。定义控制器来提供那些视图需要的属性和功能
+3。建立模型去存储控制器所需要的数据
+
+
+
+在本节中，我们用了此种结构设计，如果有个不好的设计滑落到我们的应用程序中，我们有个分离的过程，我们的视图和控制器只能通过$scope 和 ng-model交流,我们的模型给我们的控制器提供数据，但是它不管这些数据是如何存储的
+
+现在是时候进入真正令人兴奋的东西。下一节将深入到五个关键特征，将改变你从一个AngularJS开发者到AngularJS大师的转变
+
+
+
 
 
 你需要了解的5个最关键的特性
