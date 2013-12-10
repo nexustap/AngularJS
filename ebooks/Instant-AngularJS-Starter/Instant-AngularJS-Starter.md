@@ -236,7 +236,30 @@ Hello World的例子是不错的，因为它们给你介绍了框架的语法和
 ----------------------------
 我们将开始AngularJS的配置文件，Guidebook.html和Guidebook.js的。这是我们将定义应用程序的结构，包括我们的模型和控制器。首先第一件事情，让我们进入Guidebook.html，我们将在这里开始我们的文件结构：
 
-    <！DOCTYPE HTML> <html ng-app='Guidebook'> <HEAD> <脚本的src ='http://ajax的.googleapis.com / Ajax /库/ angularjs/1.0.2/angular.js的'> </ SCRIPT> src='Guidebook.js'> </ SCRIPT> <script src='controller/ChapterController.js'> </ SCRIPT> <script src='controller/NotesControllers.js'> </ SCRIPT> <script src='model/NoteModel.js'> </ SCRIPT> <script src='model/ChapterModel.js'> </ SCRIPT> <link rel='stylesheet'的href='view/styles.css'> <AngularJS入门指南</ TITLE> </ HEAD> <BODY> <H1>欢迎AngularJS入门指南</ H1> <股息NG视图> <！ -点击此处添加在运行时。- > </ DIV> </ BODY> </ HTML>
+```html
+
+   <!DOCTYPE html>
+   <html ng-app='Guidebook'>
+     <head>
+       <script src='http://ajax.googleapis.com/ajax/libs/
+       angularjs/1.0.2/angular.js'></script>
+       <script src='Guidebook.js'></script>
+       <script src='controller/ChapterController.js'></script>
+       <script src='controller/NotesControllers.js'></script>
+       <script src='model/NoteModel.js'></script>
+       <script src='model/ChapterModel.js'></script>
+       <link rel='stylesheet' href='view/styles.css'>
+       <title>AngularJS Starter Guidebook</title>
+     </head>
+     <body>
+       <h1>Welcome to the AngularJS Starter Guidebook</h1>
+       <div ng-view>
+         <!-- Views are added here at runtime. -->
+       </div>
+     </body>
+   </html>
+
+```   
 
 一些看起来很熟悉。我们有我们的DOCTYPE，我们包括AngularJS，我们有相应的注解。我们也包括我们的模型和控制器文件，但没有视图文件（视图映射通过JavaScript，我们会在一分钟内）。请注意，这个时候，我们正在定义一个名称为ng-app annotation注释。这是没有必要的，因为我们看到最后一个例子，但对于现实世界的应用，这是一个好主意，因为它可以帮助我们的模型和控制器命名。（如果我们有两个AngularJS应用程序在同一页上，单独的模块，将帮助我们记住哪些组件属于哪个应用程序）。我们也有一个新的注释：NG-视图。这告诉AngularJS，哪里需要加载我们的视图。NG视图只能有一个实例，它应该包含我们要在应用程序中动态加载和改变的一切。如果东西所在NG视图之外，像我们前面的例子中的标题，这将是在任何时候都可见。
 让我们回到Guidebook.js,指定我们的视图映射:
