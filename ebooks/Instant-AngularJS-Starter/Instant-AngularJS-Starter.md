@@ -264,6 +264,8 @@ Hello World的例子是不错的，因为它们给你介绍了框架的语法和
 一些看起来很熟悉。我们有我们的DOCTYPE，我们包括AngularJS，我们有相应的注解。我们也包括我们的模型和控制器文件，但没有视图文件（视图映射通过JavaScript，我们会在一分钟内）。请注意，这个时候，我们正在定义一个名称为ng-app annotation注释。这是没有必要的，因为我们看到最后一个例子，但对于现实世界的应用，这是一个好主意，因为它可以帮助我们的模型和控制器命名。（如果我们有两个AngularJS应用程序在同一页上，单独的模块，将帮助我们记住哪些组件属于哪个应用程序）。我们也有一个新的注释：NG-视图。这告诉AngularJS，哪里需要加载我们的视图。NG视图只能有一个实例，它应该包含我们要在应用程序中动态加载和改变的一切。如果东西所在NG视图之外，像我们前面的例子中的标题，这将是在任何时候都可见。
 让我们回到Guidebook.js,指定我们的视图映射:
 
+```javascript
+
     var guidebookConfig = function($routeProvider) {
     
         $routeProvider
@@ -288,6 +290,8 @@ Hello World的例子是不错的，因为它们给你介绍了框架的语法和
         var Guidebook = angular.module('Guidebook', []).
         config(guidebookConfig);
 
+```
+
 让我们看上文中的最后一行。看看是如何定义一个AngularJS的命名空间，我们称为模块（我们后面将讨论更多关于模块的话题）。通过这种方式，我们可以保证我们的控制器和数据模型在他们的命名空间范围内起效，这是一个最好的做法，尤其是重要的，这个应用可以加到其它的页面中与其它内容共存
 同样你看，我们绑定一个路由配置在我们的应用中，路由给控制器一个url，并通过模板展示出，控制器需要的参数是url的一部份，例如，如果我们访问http://your-webserver/guidebook.html#/chapter/2 ，angularjs加载chapters.html 页面，并传chapter/2 参数给控制器
 当我们要删除一个便笺，比如第一章中的第四章节，我们会加载一个url，后面加上#/deleteNode/1/4.,那控制器就会把此章的1到4的章节删掉
@@ -299,6 +303,8 @@ Hello World的例子是不错的，因为它们给你介绍了框架的语法和
 第4步-创建视图 
 --------------
 如前所述，我们视图文件，包含HTML模板。我们Hello World应用程序中的段落标记是一个模板，这与我们建立的应用程序指南很相似，只是这个稍微大一点。让我们现在开始定义我们这一章的模板
+
+```html
 
     <ul>
     <li ng-repeat='chapter in chapters | orderBy:"title"'>
@@ -322,6 +328,8 @@ Hello World的例子是不错的，因为它们给你介绍了框架的语法和
     <ul>
     </li>
 
+```
+
 这要比hello world视图复杂一点！我知道AngularJS有很多的魔法，这可能显得有点令人生畏。让我们现在只专注控制器上的互动，我们稍后将填写相应的语法让我们开始思考一下我们正在试图做的。我们希望这本书所有的章节和所选的章节，我们也希望用户已经创建注释。此外，各章需要添加注释的链接，每一个注释都需要有相关的删除链接。让我们来看看我们在实现中是如何工作的。
 
 我们开始列表项ng-repeat语法。可以理解成JavaScript中的foreach循环。所循环的内容在 我们的scope中，并希望每一章节都有标题和摘要，因为我们在接下来的两行中将展示它们。在那之后，我们将展示一组HTML链接（AngularJS一点点增强，像往常一样）。请记住我们的路线如何设置：我们会通过第一章的chapterid来重新加载每一章节（我们在一个循环中，我们会确认关于每章的这些链接)第二，循环以后，将通知AddNoteController 加载各章节的模板,在那之后，我们有另一个ng-repeat 指令为当前章节的注释。我们使用的是ng-show显示满足条件的注释（在满足条件的情况下）如果当前在我们的外循环chapterId匹配$ scope.selectedChapterId，如果我们要显示这些内容，我们将打印章节ID和内容，并添加一个删除的链接，再次，不要担心，还没有掌握相关语法。相反，我们应着眼于从控制器如果获取我们想要的信息。步骤如下：
@@ -332,6 +340,8 @@ Hello World的例子是不错的，因为它们给你介绍了框架的语法和
 
 我们将在第二个步骤关注ChaptersController，但首先让我们来看看我们的其他视图，比如addNote.html：
 
+```html
+
     <form name='addNote'>
     <label for='noteContent'>Enter a note about this
     chapter:</label>
@@ -340,6 +350,8 @@ Hello World的例子是不错的，因为它们给你介绍了框架的语法和
     <button ng-click='createNote()' ngdisabled='!
     note.content'>Create Note</button>
     </form>
+
+```
 
 这是一个小的更容易处理的过程。我们有一个窗体，一个标签，一个字段，和两个按钮。它看起来像我们期待的一个函数控制器，cancel() 和 createNote().。我们也有我们的ng-model 在我们的文本区域
 
@@ -351,27 +363,31 @@ NG-模型是用来建立数据模型，视图和控制器共享。这不是一�
 -------------------
 在我们的Hello World应用程序中,控制器是一个简单的功能。我们告诉AngularJS，通过ng-controller 属性绑定控制器和我们的视图。这一次，我们已经定义了绑定路由控制器，因此我们需要定义控制器有点不同。我们可以看到在ChaptersController.js:
 
-        Guidebook.controller('ChaptersController',
-    function ($scope, $location, $routeParams, ChapterModel,
-    NoteModel) {
-    var chapters = ChapterModel.getChapters();
-    for (var i=0; i<chapters.length; i++) {
-    chapters[i].notes =
-    NoteModel.getNotesForChapter(chapters[i].id);
-    }
-    $scope.chapters = chapters;
-    $scope.selectedChapterId = $routeParams.chapterId;
-    $scope.onDelete = function(noteId) {
-    var confirmDelete = confirm('Are you sure you want to delete
-    this note?');
-    if (confirmDelete) {
-    $location.path('/deleteNote/' + $routeParams.chapterId +
-    '/' + noteId);
-    }
-    };
-    }
-    );
+```javascript
 
+  Guidebook.controller('ChaptersController',
+     function ($scope, $location, $routeParams, ChapterModel,
+     NoteModel) {
+       var chapters = ChapterModel.getChapters();
+       for (var i=0; i<chapters.length; i++) {
+       chapters[i].notes =
+       NoteModel.getNotesForChapter(chapters[i].id);
+       }
+       $scope.chapters = chapters;
+       $scope.selectedChapterId = $routeParams.chapterId;
+       $scope.onDelete = function(noteId) {
+       var confirmDelete = confirm('Are you sure you want to delete
+       this note?');
+         if (confirmDelete) {
+           $location.path('/deleteNote/' + $routeParams.chapterId +
+           '/' + noteId);
+         } 
+      };
+    } 
+  );
+  
+```
+  
 正如你可以看到的，控制器在很大程度上仍是一个单一的功能。我们只是将它添加到我们的应用程序,通过调用Guidebook.controller（Guidebook是我们指定的名字,在我们的NG-应用程序的注释）。
 
 
@@ -392,6 +408,8 @@ ChapterModel 和NoteModel，是我们的模型对象。AngularJS将发送这些�
 最后，我们给视图onDelete（）函数来删除链接，正如用户之前看到的，如果用户点击删除按钮,此函数使用window.confirm（）方法，生成JavaScript（记得，AngularJS是一个增强，我们仍然有机会在我们的控制器使用标准的JavaScript功能）。如果用户进行删除，我们使用$location 参数来改变我们的URL和加载DeleteNoteController的。
 让我们形动起来！在结束之前，我们看一下我们的控制器状态和分析我们的应用程序的状态。这里的NoteController.js：
 
+```javascript
+
     Guidebook.controller('AddNoteController',
     function ($scope, $location, $routeParams, NoteModel) {
     var chapterId = $routeParams.chapterId;
@@ -411,6 +429,8 @@ ChapterModel 和NoteModel，是我们的模型对象。AngularJS将发送这些�
     $location.path('/chapter/' + chapterId);
     }
     );
+
+```
 
 有两个控制器功能在这个文件中，AddNoteController和DeleteNoteController。我们以同样的方式定义ChaptersController，你可以看到，他们采取同样的参数，去掉我们不需要的ChapterModel的，该DeleteNoteController功能类似ChaptersController。它获取chapterId和noteId 从routeParams ,发送删除命令给NoteModel。在那之后，我们重新回到的ChaptersController功能。
 AddNoteController功能是一个有点不同。我们设置两个功能，在addNote.html我们可以看到
@@ -438,6 +458,8 @@ NoteModel.getNotesForChapter()函数
 
 比如ChapterModel将是简单的两个功能。它只需要一个功能，而且要做的是返回一个没有改变的列表,这里的ChapterModel.js
 
+```javascript
+
     Guidebook.service('ChapterModel', function() {
     this.getChapters = function() {
     return [{
@@ -464,9 +486,13 @@ NoteModel.getNotesForChapter()函数
     ]};
     });
 
+```
+
 getChapters（）返回的数据结构是非常简单的，它是一个简单的JavaScript对象数组。函数定义也是很容易的，像往常一样，我们使用应用程序的命名空间，我们定义模型作为AngularJS服务。（我们会在下一节的AngularJS服务和他的分支，我们会讨论依赖注入）。 
 
 我们的NoteModel将要有趣得多，因为我们需要能够存储和检索。让我们看NoteModel.js：
+
+```javascript
 
     Guidebook.service('NoteModel', function() {
     this.getNotesForChapter = function(chapterId) {
@@ -511,6 +537,9 @@ getChapters（）返回的数据结构是非常简单的，它是一个简单的
     }
     };
     });
+
+```
+
 
 如果你熟悉使用HTML5，你会马上意识到，我们正在使用的本地存储，与现有的Web技术集成形成一个强大的模式，这是另一个例子：有很多的方式来存储和传输数据已经在网络上，让我们用AngularJS无论我们请（甚至另一个JavaScript框架）。
 比如ChapterModel，我们定义NoteModel的服务。然而，这一次，我们定义三种模式功能。让我们来看看在每一个单式
